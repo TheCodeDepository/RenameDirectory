@@ -14,7 +14,7 @@ namespace RenameDirectory
         {
             FullPath = FilePath;
             WillRename = true;
-            OrginalIndex = Index;
+            OrgIndex = Index;
             NewIndex = Index;
 
             Name = Path.GetFileNameWithoutExtension(FilePath);
@@ -24,7 +24,7 @@ namespace RenameDirectory
         }
 
         public bool WillRename { get; set; }
-        public int OrginalIndex { get; private set; }
+        public int OrgIndex { get; private set; }
         public int NewIndex { get; set; }
         public string Name { get; private set; }
         public string FullPath { get; private set; }
@@ -34,10 +34,11 @@ namespace RenameDirectory
 
         public void UpdateFileName(string new_name)
         {
-            if (new_name.Trim(' ').Length > 1)
+            if (new_name.Trim(' ').Length > 1 && WillRename)
             {
                 Name = new_name;
-                File.Move(FullPath, Path.GetPathRoot(FullPath) + Name);
+                string root = Path.GetDirectoryName(FullPath);
+                File.Move(FullPath, root +"\\"+ Name+FileExtension);
             }
         }
         

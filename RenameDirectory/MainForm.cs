@@ -13,19 +13,27 @@ namespace RenameDirectory
         }
 
         public List<FileDetails> listOfFiles { get; set; }
-
+        public List<string> FileExtensions { get; set; }
         private void directoryRootSelect_ButtonClick(object sender, EventArgs e)
         {
             FolderBrowserDialog open = new FolderBrowserDialog();
             if (open.ShowDialog() == DialogResult.OK)
             {
                 listOfFiles = new List<FileDetails>();
+                FileExtensions = new List<string>();
+
                 var all_Files = Directory.GetFiles(open.SelectedPath);
                 for (int i = 0; i < all_Files.Length; i++)
                 {
                     listOfFiles.Add(new FileDetails(all_Files[i], i));
+                    if (!FileExtensions.Contains(listOfFiles[i].FileExtension))
+                    {
+                        FileExtensions.Add(listOfFiles[i].FileExtension);
+                    }
                 }
 
+                directoryRootSelect.Text = open.SelectedPath;
+                fileExtensionsCbo.DataSource = FileExtensions;
                 LoadRecords();
             }
         }
@@ -73,19 +81,23 @@ namespace RenameDirectory
                         asc = false;
                     }
                     listOfFiles.Sort(method, asc);
-
-                    //Prevents recursive loop
                     shouldRun = false;
                     FileListView.SetObjects(listOfFiles);
                     shouldRun = true;
+
 
                 }
             }
         }
 
+        private void FileListView_BeforeSorting(object sender, BrightIdeasSoftware.BeforeSortingEventArgs e)
+        {
+            e.Handled = true;
+        }
+
         private void FileListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            listOfFiles[int.Parse(e.Item.SubItems[0].Text)].WillRename = e.Item.Checked;
+            listOfFiles[int.Parse(e.Item.Text)].WillRename = e.Item.Checked;
         }
 
         private void ManualUpBtn_Click(object sender, EventArgs e)
@@ -115,23 +127,126 @@ namespace RenameDirectory
             }
         }
 
-        private void FileListView_BeforeSorting(object sender, BrightIdeasSoftware.BeforeSortingEventArgs e)
+        private void UpdateSampleString()
         {
-            e.Handled = true;
-        }
-    }
+            string TemplateString = TemplateStringTxt.Text;
+            int padding = 5;
 
-    class RenameFiles
-    {
-        public void RenameAllFiles(string path)
-        {
-            string[] files = Directory.GetFiles(path);
+            bool index = TemplateString.Contains("[Index]");
 
-            foreach (string orginalName in files)
+            bool dateCreated = TemplateString.Contains("[DateCreated]");
+            bool timeCreated = TemplateString.Contains("[TimeCreated]");
+
+            bool dateModified = TemplateString.Contains("[DateModified]");
+            bool timeModified = TemplateString.Contains("[TimeModified]");
+
+            bool dateNow = TemplateString.Contains("[DateNow]");
+            bool timeNow = TemplateString.Contains("[TimeNow]");
+
+
+
+            if (index)
             {
-                File.GetCreationTime(Path.Combine(path, orginalName));
+                TemplateString = TemplateString.Replace("[Index]", "17".PadLeft(padding, '0'));
             }
-            File.Move("oldfilename", "newfilename");
+
+            if (dateCreated)
+            {
+                TemplateString = TemplateString.Replace("[DateCreated]", DateTime.Now.ToShortDateString());
+            }
+            if (timeCreated)
+            {
+                TemplateString = TemplateString.Replace("[TimeCreated]", DateTime.Now.ToShortTimeString());
+            }
+
+            if (dateModified)
+            {
+                TemplateString = TemplateString.Replace("[DateModified]", DateTime.Now.ToShortDateString());
+            }
+            if (timeModified)
+            {
+                TemplateString = TemplateString.Replace("[TimeModified]", DateTime.Now.ToShortTimeString());
+            }
+            if (dateNow)
+            {
+                TemplateString = TemplateString.Replace("[DateNow]", DateTime.Now.ToShortDateString());
+            }
+            if (timeNow)
+            {
+                TemplateString = TemplateString.Replace("[TimeNow]", DateTime.Now.ToShortTimeString());
+            }
+            NewNameSample.Text = TemplateString;
+        }
+
+        private void UpdateFileNames()
+        {
+
+            string TemplateString = TemplateStringTxt.Text;
+            int padding = listOfFiles.Count.ToString().Length + 1;
+
+            bool index = TemplateString.Contains("[Index]");
+            bool created = TemplateString.Contains("[Created]");
+            bool modified = TemplateString.Contains("[Modified]");
+            bool now = TemplateString.Contains("[Now]");
+
+            foreach (FileDetails item in listOfFiles)
+            {
+                string itemName = TemplateString;
+                if (index)
+                {
+                    itemName = itemName.Replace("[Index]", item.NewIndex.ToString().PadLeft(padding, '0'));
+                }
+                if (created)
+                {
+                    itemName = itemName.Replace("[Created]", item.DateCreated.ToString());
+                }
+                if (modified)
+                {
+                    itemName = itemName.Replace("[Modified]", item.DateModified.ToString());
+                }
+                if (now)
+                {
+                    itemName = itemName.Replace("[Now]", DateTime.Now.ToString());
+                }
+                item.UpdateFileName(itemName);
+            }
+        }
+
+        private void ProcessBtn_Click(object sender, EventArgs e)
+        {
+            UpdateFileNames();
+            FileListView.SetObjects(listOfFiles);
+        }
+
+        private void RenameNameText_TextChanged(object sender, EventArgs e)
+        {
+            UpdateSampleString();
+        }
+
+        private void TickType_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in FileListView.Items)
+            {
+                if (item.SubItems[4].Text == fileExtensionsCbo.Text)
+                {
+                    listOfFiles[int.Parse(item.Text)].WillRename = !listOfFiles[int.Parse(item.Text)].WillRename;
+                    item.Checked = !item.Checked;
+                }
+            }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            TemplateStringTxt.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            TemplateStringTxt.AutoCompleteSource = AutoCompleteSource.CustomSource;
+
+            string[] arr = { "[Index]", "[DateCreated]", "[TimeCreated]", "[DateModified]", "[TimeModified]", "[DateNow]", "[TimeNow]" };
+
+            AutoCompleteStringCollection collection = new AutoCompleteStringCollection();
+            collection.AddRange(arr);
+            TemplateStringTxt.AutoCompleteCustomSource = collection;
         }
     }
+
+
 }

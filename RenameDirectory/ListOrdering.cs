@@ -11,11 +11,11 @@ namespace RenameDirectory
                 case SortMethod.Index:
                     if (ascending)
                     {
-                        objList.Sort((x, y) => x.OrginalIndex.CompareTo(y.OrginalIndex));
+                        objList.Sort((x, y) => x.OrgIndex.CompareTo(y.OrgIndex));
                     }
                     else
                     {
-                        objList.Sort((x, y) => y.OrginalIndex.CompareTo(x.OrginalIndex));
+                        objList.Sort((x, y) => y.OrgIndex.CompareTo(x.OrgIndex));
                     }
                     break;
                 case SortMethod.Name:
@@ -48,6 +48,10 @@ namespace RenameDirectory
                         objList.Sort((x, y) => y.DateModified.CompareTo(x.DateModified));
                     }
                     break;
+            }
+            for (int i = 0; i < objList.Count; i++)
+            {
+                objList[i].NewIndex = i;
             }
         }  
     }
