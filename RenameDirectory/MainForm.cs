@@ -306,8 +306,9 @@ namespace RenameDirectory
         {
             string message =    "The following Tags can be used for the string template.\n" +
                                 "[Index], [DateCreated], [TimeCreated], [DateModified], [TimeModified], [DateNow], [TimeNow]\n" +
-                                "Filter and order the items you wish to rename using the grid and filter options.\n" +
                                 "The Order in which the items are displayed is the order that they will be renamed.\n" +
+                                "Use the up/down arrow keys to move single files up and down the list.\n" +
+                                "This will be reset when ordering by a column.\n" +
                                 "Author: Martin White";
 
             string title =      "Help";
