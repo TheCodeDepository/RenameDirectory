@@ -35,6 +35,12 @@ namespace RenameDirectory
                 directoryRootSelect.Text = open.SelectedPath;
                 fileExtensionsCbo.DataSource = FileExtensions;
                 LoadRecords();
+
+                ProcessBtn.Enabled = true;
+                TickTypeBtn.Enabled = true;
+                ManualDownBtn.Enabled = true;
+                ManualUpBtn.Enabled = true;
+                fileExtensionsCbo.Enabled = true;
             }
         }
 
@@ -102,28 +108,35 @@ namespace RenameDirectory
 
         private void ManualUpBtn_Click(object sender, EventArgs e)
         {
-            var row = FileListView.Items[FileListView.SelectedIndex];
-            int rowI = row.Index;
-            if (rowI != 0)
+            if (FileListView.SelectedIndex != -1)
             {
-                FileListView.Items.RemoveAt(rowI);
-                FileListView.Items.Insert(rowI - 1, row);
-                FileListView.Focus();
+                var row = FileListView.Items[FileListView.SelectedIndex];
+                int rowI = row.Index;
+                if (rowI != 0)
+                {
+                    FileListView.Items.RemoveAt(rowI);
+                    FileListView.Items.Insert(rowI - 1, row);
+                    FileListView.Focus();
 
-                FileListView.SelectedIndex = rowI - 1;
+                    FileListView.SelectedIndex = rowI - 1;
+                }
             }
+
         }
 
         private void ManualDownBtn_Click(object sender, EventArgs e)
         {
-            var row = FileListView.Items[FileListView.SelectedIndex];
-            int rowI = row.Index;
-            if (rowI != FileListView.Items.Count - 1)
+            if (FileListView.SelectedIndex != -1)
             {
-                FileListView.Items.RemoveAt(rowI);
-                FileListView.Items.Insert(rowI + 1, row);
-                FileListView.Focus();
-                FileListView.SelectedIndex = rowI + 1;
+                var row = FileListView.Items[FileListView.SelectedIndex];
+                int rowI = row.Index;
+                if (rowI != FileListView.Items.Count - 1)
+                {
+                    FileListView.Items.RemoveAt(rowI);
+                    FileListView.Items.Insert(rowI + 1, row);
+                    FileListView.Focus();
+                    FileListView.SelectedIndex = rowI + 1;
+                }
             }
         }
 
@@ -143,51 +156,53 @@ namespace RenameDirectory
             bool dateNow = TemplateString.Contains("[DateNow]");
             bool timeNow = TemplateString.Contains("[TimeNow]");
 
-
-
             if (index)
             {
                 TemplateString = TemplateString.Replace("[Index]", "17".PadLeft(padding, '0'));
             }
-
             if (dateCreated)
             {
-                TemplateString = TemplateString.Replace("[DateCreated]", DateTime.Now.ToShortDateString());
+                TemplateString = TemplateString.Replace("[DateCreated]", DateTime.Now.ToShortDateString().Replace('/', '-'));
             }
             if (timeCreated)
             {
-                TemplateString = TemplateString.Replace("[TimeCreated]", DateTime.Now.ToShortTimeString());
+                TemplateString = TemplateString.Replace("[TimeCreated]", DateTime.Now.ToLongTimeString().Replace(':', '-'));
             }
 
             if (dateModified)
             {
-                TemplateString = TemplateString.Replace("[DateModified]", DateTime.Now.ToShortDateString());
+                TemplateString = TemplateString.Replace("[DateModified]", DateTime.Now.ToShortDateString().Replace('/', '-'));
             }
             if (timeModified)
             {
-                TemplateString = TemplateString.Replace("[TimeModified]", DateTime.Now.ToShortTimeString());
+                TemplateString = TemplateString.Replace("[TimeModified]", DateTime.Now.ToLongTimeString().Replace(':', '-'));
             }
             if (dateNow)
             {
-                TemplateString = TemplateString.Replace("[DateNow]", DateTime.Now.ToShortDateString());
+                TemplateString = TemplateString.Replace("[DateNow]", DateTime.Now.ToShortDateString().Replace('/', '-'));
             }
             if (timeNow)
             {
-                TemplateString = TemplateString.Replace("[TimeNow]", DateTime.Now.ToShortTimeString());
+                TemplateString = TemplateString.Replace("[TimeNow]", DateTime.Now.ToLongTimeString().Replace(':', '-'));
             }
             NewNameSample.Text = TemplateString;
         }
 
         private void UpdateFileNames()
         {
-
             string TemplateString = TemplateStringTxt.Text;
             int padding = listOfFiles.Count.ToString().Length + 1;
 
             bool index = TemplateString.Contains("[Index]");
-            bool created = TemplateString.Contains("[Created]");
-            bool modified = TemplateString.Contains("[Modified]");
-            bool now = TemplateString.Contains("[Now]");
+
+            bool dateCreated = TemplateString.Contains("[DateCreated]");
+            bool timeCreated = TemplateString.Contains("[TimeCreated]");
+
+            bool dateModified = TemplateString.Contains("[DateModified]");
+            bool timeModified = TemplateString.Contains("[TimeModified]");
+
+            bool dateNow = TemplateString.Contains("[DateNow]");
+            bool timeNow = TemplateString.Contains("[TimeNow]");
 
             foreach (FileDetails item in listOfFiles)
             {
@@ -196,17 +211,32 @@ namespace RenameDirectory
                 {
                     itemName = itemName.Replace("[Index]", item.NewIndex.ToString().PadLeft(padding, '0'));
                 }
-                if (created)
+
+                if (dateCreated)
                 {
-                    itemName = itemName.Replace("[Created]", item.DateCreated.ToString());
+                    itemName = itemName.Replace("[DateCreated]", item.DateCreated.ToShortDateString().Replace('/', '-'));
                 }
-                if (modified)
+                if (timeCreated)
                 {
-                    itemName = itemName.Replace("[Modified]", item.DateModified.ToString());
+                    itemName = itemName.Replace("[TimeCreated]", item.DateCreated.ToLongTimeString().Replace(':', '-'));
                 }
-                if (now)
+
+                if (dateModified)
                 {
-                    itemName = itemName.Replace("[Now]", DateTime.Now.ToString());
+                    itemName = itemName.Replace("[DateModified]", item.DateModified.ToShortDateString().Replace('/', '-'));
+                }
+                if (timeModified)
+                {
+                    itemName = itemName.Replace("[TimeModified]", item.DateModified.ToLongTimeString().Replace(':', '-'));
+                }
+
+                if (dateNow)
+                {
+                    itemName = itemName.Replace("[DateNow]", DateTime.Now.ToShortDateString().Replace('/', '-'));
+                }
+                if (timeNow)
+                {
+                    itemName = itemName.Replace("[TimeNow]", DateTime.Now.ToLongTimeString().Replace(':', '-'));
                 }
                 item.UpdateFileName(itemName);
             }
@@ -214,8 +244,19 @@ namespace RenameDirectory
 
         private void ProcessBtn_Click(object sender, EventArgs e)
         {
-            UpdateFileNames();
-            FileListView.SetObjects(listOfFiles);
+            if (listOfFiles != null)
+            {
+                if (TemplateStringTxt.Text.Contains("[Index]"))
+                {
+                    UpdateFileNames();
+                    FileListView.SetObjects(listOfFiles);
+                }
+                else
+                {
+                    MetroFramework.MetroMessageBox.Show(this, "Please Include the '[Index]' Tag in the string template.", "Incorrect String Template");
+                }
+
+            }
         }
 
         private void RenameNameText_TextChanged(object sender, EventArgs e)
@@ -245,6 +286,33 @@ namespace RenameDirectory
             AutoCompleteStringCollection collection = new AutoCompleteStringCollection();
             collection.AddRange(arr);
             TemplateStringTxt.AutoCompleteCustomSource = collection;
+        }
+
+        private void FileListView_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Up:
+                    ManualUpBtn_Click(sender, new EventArgs());
+                    break;
+                case Keys.Down:
+                    ManualDownBtn_Click(sender, new EventArgs());
+                    break;
+            }
+            e.Handled = true;
+        }
+
+        private void helpBtn_Click(object sender, EventArgs e)
+        {
+            string message =    "The following Tags can be used for the string template.\n" +
+                                "[Index], [DateCreated], [TimeCreated], [DateModified], [TimeModified], [DateNow], [TimeNow]\n" +
+                                "Filter and order the items you wish to rename using the grid and filter options.\n" +
+                                "The Order in which the items are displayed is the order that they will be renamed.\n" +
+                                "Author: Martin White";
+
+            string title =      "Help";
+
+            MetroFramework.MetroMessageBox.Show(this, message, title);
         }
     }
 

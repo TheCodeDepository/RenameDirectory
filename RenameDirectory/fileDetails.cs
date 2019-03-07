@@ -36,9 +36,11 @@ namespace RenameDirectory
         {
             if (new_name.Trim(' ').Length > 1 && WillRename)
             {
+                string Target = Path.GetDirectoryName(FullPath) + "\\" + new_name + FileExtension;
+                File.Move(FullPath, Target);
+
                 Name = new_name;
-                string root = Path.GetDirectoryName(FullPath);
-                File.Move(FullPath, root +"\\"+ Name+FileExtension);
+                FullPath = Target;
             }
         }
         
