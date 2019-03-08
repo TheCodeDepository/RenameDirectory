@@ -51,7 +51,7 @@ namespace RenameDirectory
             }
             for (int i = 0; i < objList.Count; i++)
             {
-                objList[i].NewIndex = i;
+                objList[i].Index = i;
             }
         }  
     }

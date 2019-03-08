@@ -36,8 +36,6 @@
             this.DateCreatedCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.DateModifiedCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.FileExtensionCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.ManualUpBtn = new MetroFramework.Controls.MetroButton();
-            this.ManualDownBtn = new MetroFramework.Controls.MetroButton();
             this.OldIndexCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.ProcessBtn = new MetroFramework.Controls.MetroButton();
             this.TemplateStringTxt = new System.Windows.Forms.TextBox();
@@ -49,18 +47,17 @@
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel4 = new MetroFramework.Controls.MetroLabel();
             this.helpBtn = new MetroFramework.Controls.MetroLabel();
+            this.ToolTipController = new MetroFramework.Components.MetroToolTip();
             ((System.ComponentModel.ISupportInitialize)(this.FileListView)).BeginInit();
             this.SuspendLayout();
             // 
             // directoryRootSelect
             // 
-            this.directoryRootSelect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             // 
             // 
             // 
             this.directoryRootSelect.CustomButton.Image = null;
-            this.directoryRootSelect.CustomButton.Location = new System.Drawing.Point(330, 1);
+            this.directoryRootSelect.CustomButton.Location = new System.Drawing.Point(398, 1);
             this.directoryRootSelect.CustomButton.Name = "";
             this.directoryRootSelect.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.directoryRootSelect.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -80,8 +77,9 @@
             this.directoryRootSelect.ShortcutsEnabled = true;
             this.directoryRootSelect.ShowButton = true;
             this.directoryRootSelect.ShowClearButton = true;
-            this.directoryRootSelect.Size = new System.Drawing.Size(352, 23);
+            this.directoryRootSelect.Size = new System.Drawing.Size(420, 23);
             this.directoryRootSelect.TabIndex = 0;
+            this.ToolTipController.SetToolTip(this.directoryRootSelect, "Select a folder containing the files you wish to rename.");
             this.directoryRootSelect.UseSelectable = true;
             this.directoryRootSelect.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.directoryRootSelect.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
@@ -111,10 +109,10 @@
             this.FileListView.FullRowSelect = true;
             this.FileListView.Location = new System.Drawing.Point(23, 171);
             this.FileListView.Name = "FileListView";
-            this.FileListView.ShowCommandMenuOnRightClick = true;
+            this.FileListView.ShowFilterMenuOnRightClick = false;
             this.FileListView.ShowGroups = false;
             this.FileListView.ShowItemCountOnGroups = true;
-            this.FileListView.Size = new System.Drawing.Size(897, 360);
+            this.FileListView.Size = new System.Drawing.Size(854, 406);
             this.FileListView.TabIndex = 1;
             this.FileListView.UseCompatibleStateImageBehavior = false;
             this.FileListView.View = System.Windows.Forms.View.Details;
@@ -132,7 +130,8 @@
             this.IndexCol.Searchable = false;
             this.IndexCol.ShowTextInHeader = false;
             this.IndexCol.Text = "Index";
-            this.IndexCol.Width = 85;
+            this.IndexCol.ToolTipText = "";
+            this.IndexCol.Width = 100;
             // 
             // FileNameCol
             // 
@@ -146,14 +145,14 @@
             this.DateCreatedCol.AspectName = "DateCreated";
             this.DateCreatedCol.IsEditable = false;
             this.DateCreatedCol.Text = "Date Created";
-            this.DateCreatedCol.Width = 120;
+            this.DateCreatedCol.Width = 150;
             // 
             // DateModifiedCol
             // 
             this.DateModifiedCol.AspectName = "DateModified";
             this.DateModifiedCol.IsEditable = false;
             this.DateModifiedCol.Text = "Date Modified";
-            this.DateModifiedCol.Width = 120;
+            this.DateModifiedCol.Width = 150;
             // 
             // FileExtensionCol
             // 
@@ -163,31 +162,7 @@
             this.FileExtensionCol.Sortable = false;
             this.FileExtensionCol.Text = "File Type";
             this.FileExtensionCol.UseFiltering = false;
-            this.FileExtensionCol.Width = 100;
-            // 
-            // ManualUpBtn
-            // 
-            this.ManualUpBtn.Enabled = false;
-            this.ManualUpBtn.Location = new System.Drawing.Point(670, 133);
-            this.ManualUpBtn.Name = "ManualUpBtn";
-            this.ManualUpBtn.Size = new System.Drawing.Size(88, 23);
-            this.ManualUpBtn.TabIndex = 5;
-            this.ManualUpBtn.Text = "Up";
-            this.ManualUpBtn.UseSelectable = true;
-            this.ManualUpBtn.Visible = false;
-            this.ManualUpBtn.Click += new System.EventHandler(this.ManualUpBtn_Click);
-            // 
-            // ManualDownBtn
-            // 
-            this.ManualDownBtn.Enabled = false;
-            this.ManualDownBtn.Location = new System.Drawing.Point(576, 133);
-            this.ManualDownBtn.Name = "ManualDownBtn";
-            this.ManualDownBtn.Size = new System.Drawing.Size(88, 23);
-            this.ManualDownBtn.TabIndex = 6;
-            this.ManualDownBtn.Text = "Down";
-            this.ManualDownBtn.UseSelectable = true;
-            this.ManualDownBtn.Visible = false;
-            this.ManualDownBtn.Click += new System.EventHandler(this.ManualDownBtn_Click);
+            this.FileExtensionCol.Width = 130;
             // 
             // OldIndexCol
             // 
@@ -200,14 +175,15 @@
             // 
             // ProcessBtn
             // 
-            this.ProcessBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ProcessBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ProcessBtn.Enabled = false;
-            this.ProcessBtn.Location = new System.Drawing.Point(806, 133);
+            this.ProcessBtn.Location = new System.Drawing.Point(784, 75);
             this.ProcessBtn.Name = "ProcessBtn";
-            this.ProcessBtn.Size = new System.Drawing.Size(114, 23);
+            this.ProcessBtn.Size = new System.Drawing.Size(93, 81);
             this.ProcessBtn.TabIndex = 7;
             this.ProcessBtn.Text = "Process";
+            this.ToolTipController.SetToolTip(this.ProcessBtn, "Start the process or renaming each file based upon the order that are shown in th" +
+        "e list below.");
             this.ProcessBtn.UseSelectable = true;
             this.ProcessBtn.Click += new System.EventHandler(this.ProcessBtn_Click);
             // 
@@ -216,8 +192,10 @@
             this.TemplateStringTxt.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.TemplateStringTxt.Location = new System.Drawing.Point(133, 104);
             this.TemplateStringTxt.Name = "TemplateStringTxt";
-            this.TemplateStringTxt.Size = new System.Drawing.Size(352, 23);
+            this.TemplateStringTxt.Size = new System.Drawing.Size(420, 23);
             this.TemplateStringTxt.TabIndex = 8;
+            this.ToolTipController.SetToolTip(this.TemplateStringTxt, "The \'Name Template\' is used to customise what you\r\nwant each file name to look li" +
+        "ke.");
             this.TemplateStringTxt.TextChanged += new System.EventHandler(this.RenameNameText_TextChanged);
             // 
             // NewNameSample
@@ -226,29 +204,36 @@
             this.NewNameSample.Location = new System.Drawing.Point(133, 133);
             this.NewNameSample.Name = "NewNameSample";
             this.NewNameSample.ReadOnly = true;
-            this.NewNameSample.Size = new System.Drawing.Size(352, 23);
+            this.NewNameSample.Size = new System.Drawing.Size(420, 23);
             this.NewNameSample.TabIndex = 9;
+            this.ToolTipController.SetToolTip(this.NewNameSample, "A sample of the generated file names.");
             // 
             // TickTypeBtn
             // 
+            this.TickTypeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TickTypeBtn.Enabled = false;
-            this.TickTypeBtn.Location = new System.Drawing.Point(670, 74);
+            this.TickTypeBtn.Location = new System.Drawing.Point(673, 104);
             this.TickTypeBtn.Name = "TickTypeBtn";
             this.TickTypeBtn.Size = new System.Drawing.Size(88, 23);
             this.TickTypeBtn.TabIndex = 10;
             this.TickTypeBtn.Text = "Toggle Type";
+            this.ToolTipController.SetToolTip(this.TickTypeBtn, "Select a file type (\".jpg\") that you wish to check or uncheck,\r\n then click the b" +
+        "utton.");
             this.TickTypeBtn.UseSelectable = true;
             this.TickTypeBtn.Click += new System.EventHandler(this.TickType_Click);
             // 
             // fileExtensionsCbo
             // 
+            this.fileExtensionsCbo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.fileExtensionsCbo.Enabled = false;
             this.fileExtensionsCbo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.fileExtensionsCbo.FormattingEnabled = true;
-            this.fileExtensionsCbo.Location = new System.Drawing.Point(576, 75);
+            this.fileExtensionsCbo.Location = new System.Drawing.Point(673, 75);
             this.fileExtensionsCbo.Name = "fileExtensionsCbo";
             this.fileExtensionsCbo.Size = new System.Drawing.Size(88, 23);
             this.fileExtensionsCbo.TabIndex = 12;
+            this.ToolTipController.SetToolTip(this.fileExtensionsCbo, "Select a file type (\".jpg\") that you wish to check or uncheck,\r\n then click the b" +
+        "utton.");
             // 
             // metroLabel1
             // 
@@ -258,6 +243,7 @@
             this.metroLabel1.TabIndex = 13;
             this.metroLabel1.Text = "Folder";
             this.metroLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ToolTipController.SetToolTip(this.metroLabel1, "Select a folder containing the files you wish to rename.");
             // 
             // metroLabel2
             // 
@@ -267,6 +253,8 @@
             this.metroLabel2.TabIndex = 14;
             this.metroLabel2.Text = "Name Template";
             this.metroLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ToolTipController.SetToolTip(this.metroLabel2, "The \'Name Template\' is used to customise what you\r\nwant each file name to look li" +
+        "ke.");
             // 
             // metroLabel3
             // 
@@ -276,31 +264,46 @@
             this.metroLabel3.TabIndex = 15;
             this.metroLabel3.Text = "Sample";
             this.metroLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ToolTipController.SetToolTip(this.metroLabel3, "A sample of the generated file names.");
             // 
             // metroLabel4
             // 
-            this.metroLabel4.Location = new System.Drawing.Point(512, 75);
+            this.metroLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroLabel4.Location = new System.Drawing.Point(609, 75);
             this.metroLabel4.Name = "metroLabel4";
             this.metroLabel4.Size = new System.Drawing.Size(58, 23);
             this.metroLabel4.TabIndex = 16;
             this.metroLabel4.Text = "Filtering";
             this.metroLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ToolTipController.SetToolTip(this.metroLabel4, "Select a file type (\".jpg\") that you wish to check or uncheck,\r\n then click the b" +
+        "utton.");
             // 
             // helpBtn
             // 
+            this.helpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.helpBtn.AutoSize = true;
-            this.helpBtn.Location = new System.Drawing.Point(846, 7);
+            this.helpBtn.Location = new System.Drawing.Point(803, 7);
             this.helpBtn.Name = "helpBtn";
             this.helpBtn.Size = new System.Drawing.Size(15, 19);
             this.helpBtn.TabIndex = 17;
             this.helpBtn.Text = "?";
             this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
             // 
+            // ToolTipController
+            // 
+            this.ToolTipController.AutomaticDelay = 200;
+            this.ToolTipController.AutoPopDelay = 3000;
+            this.ToolTipController.InitialDelay = 200;
+            this.ToolTipController.ReshowDelay = 40;
+            this.ToolTipController.Style = MetroFramework.MetroColorStyle.Blue;
+            this.ToolTipController.StyleManager = null;
+            this.ToolTipController.Theme = MetroFramework.MetroThemeStyle.Light;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(943, 554);
+            this.ClientSize = new System.Drawing.Size(900, 600);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.metroLabel4);
             this.Controls.Add(this.metroLabel3);
@@ -311,11 +314,10 @@
             this.Controls.Add(this.NewNameSample);
             this.Controls.Add(this.TemplateStringTxt);
             this.Controls.Add(this.ProcessBtn);
-            this.Controls.Add(this.ManualDownBtn);
-            this.Controls.Add(this.ManualUpBtn);
             this.Controls.Add(this.FileListView);
             this.Controls.Add(this.directoryRootSelect);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(900, 400);
             this.Name = "MainForm";
             this.Text = "Rename File Collection";
             this.Load += new System.EventHandler(this.MainForm_Load);
@@ -333,8 +335,6 @@
         private BrightIdeasSoftware.OLVColumn FileExtensionCol;
         private BrightIdeasSoftware.OLVColumn DateCreatedCol;
         private BrightIdeasSoftware.OLVColumn DateModifiedCol;
-        private MetroFramework.Controls.MetroButton ManualUpBtn;
-        private MetroFramework.Controls.MetroButton ManualDownBtn;
         private BrightIdeasSoftware.OLVColumn IndexCol;
         private BrightIdeasSoftware.OLVColumn OldIndexCol;
         private MetroFramework.Controls.MetroButton ProcessBtn;
@@ -347,6 +347,7 @@
         private MetroFramework.Controls.MetroLabel metroLabel3;
         private MetroFramework.Controls.MetroLabel metroLabel4;
         private MetroFramework.Controls.MetroLabel helpBtn;
+        private MetroFramework.Components.MetroToolTip ToolTipController;
     }
 }
 

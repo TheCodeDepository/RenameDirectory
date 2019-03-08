@@ -7,18 +7,37 @@ namespace RenameDirectory
 {
     public partial class MainForm : MetroFramework.Forms.MetroForm
     {
+
+        //Form Loading
         public MainForm()
         {
             InitializeComponent();
         }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            TemplateStringTxt.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            TemplateStringTxt.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
+            string[] arr = { "[Index]", "[DateCreated]", "[TimeCreated]", "[DateModified]", "[TimeModified]", "[DateNow]", "[TimeNow]" };
+
+            AutoCompleteStringCollection collection = new AutoCompleteStringCollection();
+            collection.AddRange(arr);
+            TemplateStringTxt.AutoCompleteCustomSource = collection;
+
+
+        }
+
+        //Properties
         public List<FileDetails> listOfFiles { get; set; }
         public List<string> FileExtensions { get; set; }
+
+        //Select Folder
         private void directoryRootSelect_ButtonClick(object sender, EventArgs e)
         {
             FolderBrowserDialog open = new FolderBrowserDialog();
             if (open.ShowDialog() == DialogResult.OK)
             {
+                //Load list of file details.
                 listOfFiles = new List<FileDetails>();
                 FileExtensions = new List<string>();
 
@@ -26,6 +45,7 @@ namespace RenameDirectory
                 for (int i = 0; i < all_Files.Length; i++)
                 {
                     listOfFiles.Add(new FileDetails(all_Files[i], i));
+
                     if (!FileExtensions.Contains(listOfFiles[i].FileExtension))
                     {
                         FileExtensions.Add(listOfFiles[i].FileExtension);
@@ -34,27 +54,23 @@ namespace RenameDirectory
 
                 directoryRootSelect.Text = open.SelectedPath;
                 fileExtensionsCbo.DataSource = FileExtensions;
-                LoadRecords();
+                FileListView.SetObjects(listOfFiles);
 
                 ProcessBtn.Enabled = true;
                 TickTypeBtn.Enabled = true;
-                ManualDownBtn.Enabled = true;
-                ManualUpBtn.Enabled = true;
                 fileExtensionsCbo.Enabled = true;
             }
         }
 
-        private void LoadRecords()
+
+        //Sorting Overide Methods
+        private void FileListView_BeforeSorting(object sender, BrightIdeasSoftware.BeforeSortingEventArgs e)
         {
-            for (int i = 0; i < listOfFiles.Count; i++)
-            {
-                listOfFiles[i].NewIndex = i;
-            }
-            FileListView.SetObjects(listOfFiles);
+            e.Handled = true;
         }
 
+        //To Prevent recursive loop.
         bool shouldRun = true;
-
         private void FileListView_AfterSorting(object sender, BrightIdeasSoftware.AfterSortingEventArgs e)
         {
             if (shouldRun)
@@ -62,18 +78,18 @@ namespace RenameDirectory
                 if (listOfFiles != null && e.ColumnToSort != null)
                 {
                     SortMethod method;
-                    switch (e.ColumnToSort.Name)
+                    switch (e.ColumnToSort.Text)
                     {
-                        case "OldIndexCol":
+                        case "Index":
                             method = SortMethod.Index;
                             break;
-                        case "FileNameCol":
+                        case "File Name":
                             method = SortMethod.Name;
                             break;
-                        case "DateCreatedCol":
+                        case "Date Created":
                             method = SortMethod.DateCreated;
                             break;
-                        case "DateModifiedCol":
+                        case "Date Modified":
                             method = SortMethod.DateModified;
                             break;
                         default:
@@ -90,55 +106,69 @@ namespace RenameDirectory
                     shouldRun = false;
                     FileListView.SetObjects(listOfFiles);
                     shouldRun = true;
-
-
                 }
             }
         }
 
-        private void FileListView_BeforeSorting(object sender, BrightIdeasSoftware.BeforeSortingEventArgs e)
-        {
-            e.Handled = true;
-        }
 
         private void FileListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             listOfFiles[int.Parse(e.Item.Text)].WillRename = e.Item.Checked;
+            
         }
 
-        private void ManualUpBtn_Click(object sender, EventArgs e)
+
+        //Moving Items up and down the list.
+        private void MoveItemUp()
         {
             if (FileListView.SelectedIndex != -1)
             {
                 var row = FileListView.Items[FileListView.SelectedIndex];
-                int rowI = row.Index;
+                FileDetails file = listOfFiles[FileListView.SelectedIndex];
+                int rowI = file.Index;
                 if (rowI != 0)
                 {
-                    FileListView.Items.RemoveAt(rowI);
-                    FileListView.Items.Insert(rowI - 1, row);
-                    FileListView.Focus();
+                    listOfFiles.RemoveAt(rowI);
+                    listOfFiles.Insert(rowI - 1, file);
+                    listOfFiles[rowI].Index = rowI;
+                    file.Index = rowI - 1;
 
+                    FileListView.Items.RemoveAt(rowI);
+                    FileListView.Items.Insert(file.Index, row);
+
+                    //FileListView.SetObjects(listOfFiles);
+                    FileListView.Focus();
                     FileListView.SelectedIndex = rowI - 1;
                 }
             }
-
         }
 
-        private void ManualDownBtn_Click(object sender, EventArgs e)
+        private void MoveItemDown()
         {
             if (FileListView.SelectedIndex != -1)
             {
                 var row = FileListView.Items[FileListView.SelectedIndex];
-                int rowI = row.Index;
-                if (rowI != FileListView.Items.Count - 1)
+                FileDetails file = listOfFiles[FileListView.SelectedIndex];
+                int rowI = file.Index;
+
+                if (rowI != listOfFiles.Count - 1)
                 {
+                    listOfFiles.RemoveAt(rowI);
+                    listOfFiles.Insert(rowI + 1, file);
+                    listOfFiles[rowI].Index = rowI;
+
+                    file.Index = rowI + 1;
+
                     FileListView.Items.RemoveAt(rowI);
-                    FileListView.Items.Insert(rowI + 1, row);
+                    FileListView.Items.Insert(file.Index, row);
+
+                    //FileListView.SetObjects(listOfFiles);
                     FileListView.Focus();
                     FileListView.SelectedIndex = rowI + 1;
                 }
             }
         }
+
 
         private void UpdateSampleString()
         {
@@ -209,7 +239,7 @@ namespace RenameDirectory
                 string itemName = TemplateString;
                 if (index)
                 {
-                    itemName = itemName.Replace("[Index]", item.NewIndex.ToString().PadLeft(padding, '0'));
+                    itemName = itemName.Replace("[Index]", item.Index.ToString().PadLeft(padding, '0'));
                 }
 
                 if (dateCreated)
@@ -248,12 +278,19 @@ namespace RenameDirectory
             {
                 if (TemplateStringTxt.Text.Contains("[Index]"))
                 {
-                    UpdateFileNames();
+                    try
+                    {
+                        UpdateFileNames();
+                    }
+                    catch (Exception m)
+                    {
+                        MetroFramework.MetroMessageBox.Show(this, m.Message, "Error has occured",MessageBoxButtons.OK,MessageBoxIcon.Error,MessageBoxDefaultButton.Button1);
+                    }
                     FileListView.SetObjects(listOfFiles);
                 }
                 else
                 {
-                    MetroFramework.MetroMessageBox.Show(this, "Please Include the '[Index]' Tag in the string template.", "Incorrect String Template");
+                    MetroFramework.MetroMessageBox.Show(this, "Please Include the '[Index]' Tag in the Name Template.", "Incorrect String Template");
                 }
 
             }
@@ -276,27 +313,16 @@ namespace RenameDirectory
             }
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            TemplateStringTxt.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            TemplateStringTxt.AutoCompleteSource = AutoCompleteSource.CustomSource;
-
-            string[] arr = { "[Index]", "[DateCreated]", "[TimeCreated]", "[DateModified]", "[TimeModified]", "[DateNow]", "[TimeNow]" };
-
-            AutoCompleteStringCollection collection = new AutoCompleteStringCollection();
-            collection.AddRange(arr);
-            TemplateStringTxt.AutoCompleteCustomSource = collection;
-        }
 
         private void FileListView_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
                 case Keys.Up:
-                    ManualUpBtn_Click(sender, new EventArgs());
+                    MoveItemUp();
                     break;
                 case Keys.Down:
-                    ManualDownBtn_Click(sender, new EventArgs());
+                    MoveItemDown();
                     break;
             }
             e.Handled = true;
@@ -304,14 +330,14 @@ namespace RenameDirectory
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
-            string message =    "The following Tags can be used for the string template.\n" +
+            string message = "The following Tags can be used for the string template.\n" +
                                 "[Index], [DateCreated], [TimeCreated], [DateModified], [TimeModified], [DateNow], [TimeNow]\n" +
                                 "The Order in which the items are displayed is the order that they will be renamed.\n" +
                                 "Use the up/down arrow keys to move single files up and down the list.\n" +
                                 "This will be reset when ordering by a column.\n" +
                                 "Author: Martin White";
 
-            string title =      "Help";
+            string title = "Help";
 
             MetroFramework.MetroMessageBox.Show(this, message, title);
         }

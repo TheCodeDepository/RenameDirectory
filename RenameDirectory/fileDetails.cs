@@ -15,7 +15,7 @@ namespace RenameDirectory
             FullPath = FilePath;
             WillRename = true;
             OrgIndex = Index;
-            NewIndex = Index;
+            this.Index = Index;
 
             Name = Path.GetFileNameWithoutExtension(FilePath);
             FileExtension = Path.GetExtension(FilePath);
@@ -25,7 +25,7 @@ namespace RenameDirectory
 
         public bool WillRename { get; set; }
         public int OrgIndex { get; private set; }
-        public int NewIndex { get; set; }
+        public int Index { get; set; }
         public string Name { get; private set; }
         public string FullPath { get; private set; }
         public string FileExtension { get; private set; }
