@@ -55,7 +55,6 @@ namespace RenameDirectory
                 directoryRootSelect.Text = open.SelectedPath;
                 fileExtensionsCbo.DataSource = FileExtensions;
                 FileListView.SetObjects(listOfFiles);
-
                 ProcessBtn.Enabled = true;
                 TickTypeBtn.Enabled = true;
                 fileExtensionsCbo.Enabled = true;
@@ -303,12 +302,12 @@ namespace RenameDirectory
 
         private void TickType_Click(object sender, EventArgs e)
         {
-            foreach (ListViewItem item in FileListView.Items)
+            foreach (var item in listOfFiles)
             {
-                if (item.SubItems[4].Text == fileExtensionsCbo.Text)
+                if (item.FileExtension == fileExtensionsCbo.Text)
                 {
-                    listOfFiles[int.Parse(item.Text)].WillRename = !listOfFiles[int.Parse(item.Text)].WillRename;
-                    item.Checked = !item.Checked;
+                    item.WillRename = !item.WillRename;
+                    FileListView.Items[item.Index].Checked = item.WillRename;
                 }
             }
         }
