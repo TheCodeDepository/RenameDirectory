@@ -1,4 +1,4 @@
-﻿namespace RenameDirectory
+﻿namespace RenameCollection
 {
     partial class MainForm
     {
@@ -189,6 +189,16 @@
             // 
             // TemplateStringTxt
             // 
+            this.TemplateStringTxt.AutoCompleteCustomSource.AddRange(new string[] {
+            "[Index]",
+            "[DateCreated]",
+            "[TimeCreated]",
+            "[DateModified]",
+            "[TimeModified]",
+            "[DateNow]",
+            "[TimeNow]"});
+            this.TemplateStringTxt.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.TemplateStringTxt.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.TemplateStringTxt.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.TemplateStringTxt.Location = new System.Drawing.Point(133, 104);
             this.TemplateStringTxt.Name = "TemplateStringTxt";
@@ -320,7 +330,6 @@
             this.MinimumSize = new System.Drawing.Size(900, 400);
             this.Name = "MainForm";
             this.Text = "Rename File Collection";
-            this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.FileListView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

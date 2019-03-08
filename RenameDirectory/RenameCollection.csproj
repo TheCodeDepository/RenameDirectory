@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{FCC94A56-692E-44C3-AC87-50379A5C53CF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>RenameDirectory</RootNamespace>
-    <AssemblyName>RenameDirectory</AssemblyName>
+    <RootNamespace>RenameCollection</RootNamespace>
+    <AssemblyName>RenameCollection</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -67,7 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fileDetails.cs" />
+    <Compile Include="FileController.cs" />
+    <Compile Include="FileDetails.cs" />
     <Compile Include="ListOrdering.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -88,6 +89,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

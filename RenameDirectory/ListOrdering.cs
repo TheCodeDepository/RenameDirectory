@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RenameDirectory
+namespace RenameCollection
 {
     public static class ListOrdering
     {
