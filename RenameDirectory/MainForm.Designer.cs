@@ -48,6 +48,7 @@
             this.metroLabel4 = new MetroFramework.Controls.MetroLabel();
             this.helpBtn = new MetroFramework.Controls.MetroLabel();
             this.ToolTipController = new MetroFramework.Components.MetroToolTip();
+            this.DateTakenCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             ((System.ComponentModel.ISupportInitialize)(this.FileListView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -89,6 +90,7 @@
             // 
             this.FileListView.AllColumns.Add(this.IndexCol);
             this.FileListView.AllColumns.Add(this.FileNameCol);
+            this.FileListView.AllColumns.Add(this.DateTakenCol);
             this.FileListView.AllColumns.Add(this.DateCreatedCol);
             this.FileListView.AllColumns.Add(this.DateModifiedCol);
             this.FileListView.AllColumns.Add(this.FileExtensionCol);
@@ -102,6 +104,7 @@
             this.FileListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.IndexCol,
             this.FileNameCol,
+            this.DateTakenCol,
             this.DateCreatedCol,
             this.DateModifiedCol,
             this.FileExtensionCol});
@@ -138,21 +141,21 @@
             this.FileNameCol.AspectName = "Name";
             this.FileNameCol.IsEditable = false;
             this.FileNameCol.Text = "File Name";
-            this.FileNameCol.Width = 300;
+            this.FileNameCol.Width = 250;
             // 
             // DateCreatedCol
             // 
             this.DateCreatedCol.AspectName = "DateCreated";
             this.DateCreatedCol.IsEditable = false;
             this.DateCreatedCol.Text = "Date Created";
-            this.DateCreatedCol.Width = 150;
+            this.DateCreatedCol.Width = 120;
             // 
             // DateModifiedCol
             // 
             this.DateModifiedCol.AspectName = "DateModified";
             this.DateModifiedCol.IsEditable = false;
             this.DateModifiedCol.Text = "Date Modified";
-            this.DateModifiedCol.Width = 150;
+            this.DateModifiedCol.Width = 120;
             // 
             // FileExtensionCol
             // 
@@ -162,7 +165,7 @@
             this.FileExtensionCol.Sortable = false;
             this.FileExtensionCol.Text = "File Type";
             this.FileExtensionCol.UseFiltering = false;
-            this.FileExtensionCol.Width = 130;
+            this.FileExtensionCol.Width = 120;
             // 
             // OldIndexCol
             // 
@@ -309,6 +312,13 @@
             this.ToolTipController.StyleManager = null;
             this.ToolTipController.Theme = MetroFramework.MetroThemeStyle.Light;
             // 
+            // DateTakenCol
+            // 
+            this.DateTakenCol.AspectName = "DateTaken";
+            this.DateTakenCol.IsEditable = false;
+            this.DateTakenCol.Text = "Date Taken";
+            this.DateTakenCol.Width = 120;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -357,6 +367,7 @@
         private MetroFramework.Controls.MetroLabel metroLabel4;
         private MetroFramework.Controls.MetroLabel helpBtn;
         private MetroFramework.Components.MetroToolTip ToolTipController;
+        private BrightIdeasSoftware.OLVColumn DateTakenCol;
     }
 }
 

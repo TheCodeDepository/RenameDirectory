@@ -28,6 +28,16 @@ namespace RenameCollection
                         objList.Sort((x, y) => y.Name.CompareTo(x.Name));
                     }
                     break;
+                case SortMethod.DateTaken:
+                    if (ascending)
+                    {
+                        objList.Sort((x, y) => x.DateTaken.CompareTo(y.DateTaken));
+                    }
+                    else
+                    {
+                        objList.Sort((x, y) => y.DateTaken.CompareTo(x.DateTaken));
+                    }
+                    break;
                 case SortMethod.DateCreated:
                     if (ascending)
                     {
@@ -58,7 +68,7 @@ namespace RenameCollection
 
     public enum SortMethod
     {
-        Index, Name, DateCreated, DateModified
+        Index, Name, DateTaken, DateCreated, DateModified
     }
 
 

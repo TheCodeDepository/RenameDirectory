@@ -11,8 +11,9 @@ namespace RenameCollection
         public MainForm()
         {
             InitializeComponent();
+
         }
-       
+
         //Properties
         public List<FileDetails> fileList { get; set; }
         public List<string> fileExtensions { get; set; }
@@ -47,34 +48,9 @@ namespace RenameCollection
             }
         }
 
-        //Handling the String Templating
-        private void ProcessBtn_Click(object sender, EventArgs e)
-        {
-            if (fileList != null)
-            {
-                if (TemplateStringTxt.Text.Contains("[Index]"))
-                {
-                    try
-                    {
-                       FileController.UpdateFileNames(TemplateStringTxt.Text,fileList);
-                    }
-                    catch (Exception m)
-                    {
-                        MetroFramework.MetroMessageBox.Show(this, m.Message, "Error has occured",MessageBoxButtons.OK,MessageBoxIcon.Error,MessageBoxDefaultButton.Button1);
-                    }
-                    FileListView.SetObjects(fileList);
-                }
-                else
-                {
-                    MetroFramework.MetroMessageBox.Show(this, "Please Include the '[Index]' Tag in the Name Template.", "Incorrect String Template");
-                }
-
-            }
-        }
-
         private void RenameNameText_TextChanged(object sender, EventArgs e)
         {
-            NewNameSample.Text = FileController.UpdateSampleString(TemplateStringTxt.Text);            
+            NewNameSample.Text = FileController.UpdateSampleString(TemplateStringTxt.Text);
         }
 
         //Mass de/selection via file type
@@ -90,6 +66,8 @@ namespace RenameCollection
                     FileListView.Items[item.Index].Checked = item.WillRename;
                 }
             }
+            FileListView.RefreshOverlays();
+            //FileListView.SetObjects(fileList);
         }
 
         //Moving Items up and down the list.
@@ -98,7 +76,7 @@ namespace RenameCollection
             switch (e.KeyCode)
             {
                 case Keys.Up:
-                    FileController.MoveItemUp(FileListView,fileList);
+                    FileController.MoveItemUp(FileListView, fileList);
                     break;
                 case Keys.Down:
                     FileController.MoveItemDown(FileListView, fileList);
@@ -143,6 +121,25 @@ namespace RenameCollection
             string title = "Help";
             MetroFramework.MetroMessageBox.Show(this, message, title);
         }
+
+        //Go Button
+        private void ProcessBtn_Click(object sender, EventArgs e)
+        {
+            if (fileList != null)
+            {
+                if (TemplateStringTxt.Text.Contains("[Index]"))
+                {
+                    ProgressWindow win = new ProgressWindow(TemplateStringTxt.Text, fileList);
+                    win.ShowDialog();
+                    FileListView.SetObjects(fileList);
+                }
+                else
+                {
+                    MetroFramework.MetroMessageBox.Show(this, "Please Include the '[Index]' Tag in the Name Template.", "Incorrect String Template");
+                }
+            }
+        }
+
 
     }
 }

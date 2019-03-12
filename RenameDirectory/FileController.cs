@@ -6,11 +6,10 @@ namespace RenameCollection
 {
     public static class FileController
     {
-        internal static void UpdateFileNames(string TemplateString, List<FileDetails> FileList)
+        internal static void UpdateFileNames(string TemplateString, List<FileDetails> FileList, Action<int> ProgressReport)
         {
             int padding = FileList.Count.ToString().Length + 1;
-
-            bool index = TemplateString.Contains("[Index]");
+            int fileCount = FileList.Count;
 
             bool dateCreated = TemplateString.Contains("[DateCreated]");
             bool timeCreated = TemplateString.Contains("[TimeCreated]");
@@ -21,17 +20,15 @@ namespace RenameCollection
             bool dateNow = TemplateString.Contains("[DateNow]");
             bool timeNow = TemplateString.Contains("[TimeNow]");
 
-            int loopIndex = 0;
-            foreach (FileDetails item in FileList)
+            int index = 0;
+            for (int i = 0; i < fileCount; i++)
             {
+                FileDetails item = FileList[i];
                 if (item.WillRename)
                 {
                     string itemName = TemplateString;
-                    if (index)
-                    {
-                        itemName = itemName.Replace("[Index]", loopIndex.ToString().PadLeft(padding, '0'));
-                        loopIndex++;
-                    }
+                    itemName = itemName.Replace("[Index]", index.ToString().PadLeft(padding, '0'));
+                    index++;
                     if (dateCreated)
                     {
                         itemName = itemName.Replace("[DateCreated]", item.DateCreated.ToShortDateString().Replace('/', '-'));
@@ -57,9 +54,46 @@ namespace RenameCollection
                         itemName = itemName.Replace("[TimeNow]", DateTime.Now.ToLongTimeString().Replace(':', '-'));
                     }
                     item.UpdateFileName(itemName);
-                }
+                    ProgressReport((i * 100) / fileCount);
 
+                }
             }
+            #region
+            //foreach (FileDetails item in FileList)
+            //{
+            //    if (item.WillRename)
+            //    {
+            //        string itemName = TemplateString;
+            //        itemName = itemName.Replace("[Index]", loopIndex.ToString().PadLeft(padding, '0'));
+
+            //        if (dateCreated)
+            //        {
+            //            itemName = itemName.Replace("[DateCreated]", item.DateCreated.ToShortDateString().Replace('/', '-'));
+            //        }
+            //        if (timeCreated)
+            //        {
+            //            itemName = itemName.Replace("[TimeCreated]", item.DateCreated.ToLongTimeString().Replace(':', '-'));
+            //        }
+            //        if (dateModified)
+            //        {
+            //            itemName = itemName.Replace("[DateModified]", item.DateModified.ToShortDateString().Replace('/', '-'));
+            //        }
+            //        if (timeModified)
+            //        {
+            //            itemName = itemName.Replace("[TimeModified]", item.DateModified.ToLongTimeString().Replace(':', '-'));
+            //        }
+            //        if (dateNow)
+            //        {
+            //            itemName = itemName.Replace("[DateNow]", DateTime.Now.ToShortDateString().Replace('/', '-'));
+            //        }
+            //        if (timeNow)
+            //        {
+            //            itemName = itemName.Replace("[TimeNow]", DateTime.Now.ToLongTimeString().Replace(':', '-'));
+            //        }
+            //        item.UpdateFileName(itemName);
+            //    }
+            //}
+            #endregion
         }
 
         internal static string UpdateSampleString(string TemplateString)
@@ -109,7 +143,7 @@ namespace RenameCollection
 
 
 
-        internal static void SortList(List<FileDetails> Files, BrightIdeasSoftware.AfterSortingEventArgs e)
+        internal static void SortList(List<FileDetails> Files, AfterSortingEventArgs e)
         {
             if (Files != null && e.ColumnToSort != null)
             {
@@ -121,6 +155,9 @@ namespace RenameCollection
                         break;
                     case "File Name":
                         method = SortMethod.Name;
+                        break;
+                    case "Date Taken":
+                        method = SortMethod.DateTaken;
                         break;
                     case "Date Created":
                         method = SortMethod.DateCreated;
