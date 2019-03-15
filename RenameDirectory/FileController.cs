@@ -6,7 +6,7 @@ namespace RenameCollection
 {
     public static class FileController
     {
-        internal static void UpdateFileNames(string TemplateString, List<FileDetails> FileList, Action<int> ProgressReport)
+        internal static void UpdateFileNames(string TemplateString, List<Document> FileList, Action<int> ProgressReport)
         {
             int padding = FileList.Count.ToString().Length + 1;
             int fileCount = FileList.Count;
@@ -23,8 +23,8 @@ namespace RenameCollection
             int index = 0;
             for (int i = 0; i < fileCount; i++)
             {
-                FileDetails item = FileList[i];
-                if (item.WillRename)
+                Document item = FileList[i];
+                if (item.Checked)
                 {
                     string itemName = TemplateString;
                     itemName = itemName.Replace("[Index]", index.ToString().PadLeft(padding, '0'));
@@ -143,7 +143,7 @@ namespace RenameCollection
 
 
 
-        internal static void SortList(List<FileDetails> Files, AfterSortingEventArgs e)
+        internal static void SortList(List<Document> Files, AfterSortingEventArgs e)
         {
             if (Files != null && e.ColumnToSort != null)
             {
@@ -179,52 +179,64 @@ namespace RenameCollection
             }
         }
 
-        internal static void MoveItemUp(ObjectListView ListView, List<FileDetails> Files)
+        internal static void MoveItemUp(ObjectListView ListView, List<Document> Files)
         {
             if (ListView.SelectedIndex != -1)
             {
                 var row = ListView.Items[ListView.SelectedIndex];
-                FileDetails file = Files[ListView.SelectedIndex];
-                int rowI = file.Index;
-                if (rowI != 0)
+                var file = Files[ListView.SelectedIndex];
+                //int rowI = file.Index;
+                if (ListView.SelectedIndex != 0)
                 {
-                    Files.RemoveAt(rowI);
-                    Files.Insert(rowI - 1, file);
-                    Files[rowI].Index = rowI;
-                    file.Index = rowI - 1;
+                    //Files.RemoveAt(rowI);
+                    //Files.Insert(rowI - 1, file);
+                    //Files[rowI].Index = rowI;
+                    //file.Index = rowI - 1;
 
-                    ListView.Items.RemoveAt(rowI);
-                    ListView.Items.Insert(file.Index, row);
+                    ListView.Items.RemoveAt(ListView.SelectedIndex);
+                    ListView.Items.Insert(ListView.SelectedIndex - 1, row);
 
                     ListView.Focus();
-                    ListView.SelectedIndex = rowI - 1;
+                    ListView.SelectedIndex = ListView.SelectedIndex - 1;
                 }
             }
         }
 
-        internal static void MoveItemDown(ObjectListView ListView, List<FileDetails> Files)
+        internal static void MoveItemDown(ObjectListView ListView, List<Document> Files)
         {
             if (ListView.SelectedIndex != -1)
             {
                 var row = ListView.Items[ListView.SelectedIndex];
-                FileDetails file = Files[ListView.SelectedIndex];
-                int rowI = file.Index;
+                var file = Files[ListView.SelectedIndex];
+                //int rowI = file.Index;
 
-                if (rowI != Files.Count - 1)
+                if (ListView.SelectedIndex != Files.Count - 1)
                 {
-                    Files.RemoveAt(rowI);
-                    Files.Insert(rowI + 1, file);
-                    Files[rowI].Index = rowI;
+                    //Files.RemoveAt(rowI);
+                    //Files.Insert(rowI + 1, file);
+                    //Files[rowI].Index = rowI;
 
-                    file.Index = rowI + 1;
+                    //file.Index = rowI + 1;
 
-                    ListView.Items.RemoveAt(rowI);
-                    ListView.Items.Insert(file.Index, row);
+                    ListView.Items.RemoveAt(ListView.SelectedIndex);
+                    ListView.Items.Insert(ListView.SelectedIndex + 1, row);
 
                     ListView.Focus();
-                    ListView.SelectedIndex = rowI + 1;
+                    ListView.SelectedIndex = ListView.SelectedIndex + 1;
                 }
             }
+        }
+
+        internal static Document FindDoc(this List<Document> FileList, string FileName)
+        {
+            foreach (Document document in FileList)
+            {
+                if (FileName == document.FileName)
+                {
+                    return document;
+                }
+            }
+            return null;
         }
     }
 }

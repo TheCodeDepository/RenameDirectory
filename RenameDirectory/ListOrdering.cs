@@ -4,38 +4,28 @@ namespace RenameCollection
 {
     public static class ListOrdering
     {
-        public static void Sort(this List<FileDetails> objList, SortMethod sortMethod = SortMethod.Index, bool ascending = true)
+        public static void Sort(this List<Document> objList, SortMethod sortMethod = SortMethod.Index, bool ascending = true)
         {
             switch (sortMethod)
-            {
-                case SortMethod.Index:
-                    if (ascending)
-                    {
-                        objList.Sort((x, y) => x.OrgIndex.CompareTo(y.OrgIndex));
-                    }
-                    else
-                    {
-                        objList.Sort((x, y) => y.OrgIndex.CompareTo(x.OrgIndex));
-                    }
-                    break;
+            {                    
                 case SortMethod.Name:
                     if (ascending)
                     {
-                        objList.Sort((x, y) => x.Name.CompareTo(y.Name));
+                        objList.Sort((x, y) => x.FileName.CompareTo(y.FileName));
                     }
                     else
                     {
-                        objList.Sort((x, y) => y.Name.CompareTo(x.Name));
+                        objList.Sort((x, y) => y.FileName.CompareTo(x.FileName));
                     }
                     break;
                 case SortMethod.DateTaken:
                     if (ascending)
                     {
-                        objList.Sort((x, y) => x.DateTaken.CompareTo(y.DateTaken));
+                        objList.Sort((x, y) => x.EarliestDate.CompareTo(y.EarliestDate));
                     }
                     else
                     {
-                        objList.Sort((x, y) => y.DateTaken.CompareTo(x.DateTaken));
+                        objList.Sort((x, y) => y.EarliestDate.CompareTo(x.EarliestDate));
                     }
                     break;
                 case SortMethod.DateCreated:
@@ -58,10 +48,6 @@ namespace RenameCollection
                         objList.Sort((x, y) => y.DateModified.CompareTo(x.DateModified));
                     }
                     break;
-            }
-            for (int i = 0; i < objList.Count; i++)
-            {
-                objList[i].Index = i;
             }
         }  
     }

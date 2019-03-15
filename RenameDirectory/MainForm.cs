@@ -15,8 +15,21 @@ namespace RenameCollection
         }
 
         //Properties
-        public List<FileDetails> fileList { get; set; }
+        public List<Document> fileList { get; set; }
         public List<string> fileExtensions { get; set; }
+
+        //Load Record/Image
+        private void FileListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (FileListView.SelectedIndex > -1)
+            {
+                imageBox.Image = fileList[FileListView.SelectedIndex].GetImage;
+
+            }
+        }
+
+
+
 
         //Select Folder and load Files into List
         private void directoryRootSelect_ButtonClick(object sender, EventArgs e)
@@ -24,30 +37,57 @@ namespace RenameCollection
             FolderBrowserDialog open = new FolderBrowserDialog();
             if (open.ShowDialog() == DialogResult.OK)
             {
-                //Load list of file details.
-                fileList = new List<FileDetails>();
-                fileExtensions = new List<string>();
-
-                var all_Files = Directory.GetFiles(open.SelectedPath);
-                for (int i = 0; i < all_Files.Length; i++)
-                {
-                    fileList.Add(new FileDetails(all_Files[i], i));
-
-                    if (!fileExtensions.Contains(fileList[i].FileExtension))
-                    {
-                        fileExtensions.Add(fileList[i].FileExtension);
-                    }
-                }
-
                 directoryRootSelect.Text = open.SelectedPath;
-                fileExtensionsCbo.DataSource = fileExtensions;
-                FileListView.SetObjects(fileList);
                 ProcessBtn.Enabled = true;
                 TickTypeBtn.Enabled = true;
                 fileExtensionsCbo.Enabled = true;
+
+                //Load list of file details.
+                fileList = GetDocuments(open.SelectedPath);
+                FileListView.SetObjects(fileList);
+
             }
         }
 
+        //Load Files Into List
+        private List<Document> GetDocuments(string open)
+        {
+            fileExtensions = new List<string>();
+            var list = new List<Document>();
+            string[] all_Files = Directory.GetFiles(open);
+
+            for (int i = 0; i < all_Files.Length; i++)
+            {
+                list.Add(new Document(all_Files[i]));
+                if (!fileExtensions.Contains(list[i].FileExtension))
+                {
+                    fileExtensions.Add(list[i].FileExtension);
+                }
+            }
+            fileExtensionsCbo.DataSource = fileExtensions;
+            return list;
+        }
+
+        //Go Button
+        private void ProcessBtn_Click(object sender, EventArgs e)
+        {
+            if (fileList != null)
+            {
+                if (TemplateStringTxt.Text.Contains("[Index]"))
+                {
+                    OrderFileList();
+                    ProgressWindow win = new ProgressWindow(TemplateStringTxt.Text, fileList);
+                    win.ShowDialog();
+                    FileListView.SetObjects(fileList);
+                }
+                else
+                {
+                    MetroFramework.MetroMessageBox.Show(this, "Please Include the '[Index]' Tag in the Name Template.", "Incorrect String Template");
+                }
+            }
+        }
+
+        //Template String Changed
         private void RenameNameText_TextChanged(object sender, EventArgs e)
         {
             NewNameSample.Text = FileController.UpdateSampleString(TemplateStringTxt.Text);
@@ -56,56 +96,23 @@ namespace RenameCollection
         //Mass de/selection via file type
         private void TickType_Click(object sender, EventArgs e)
         {
-            foreach (var item in fileList)
-            {
-                if (item.FileExtension == fileExtensionsCbo.Text)
-                {
-                    //Process order is important as list view as crude 
-                    //databinding that will overide the option if not set in the object first.
-                    item.WillRename = !item.WillRename;
-                    FileListView.Items[item.Index].Checked = item.WillRename;
-                }
-            }
-            FileListView.RefreshOverlays();
+            //var items = FileListView.Items;
+            //for (int i = 0; i < FileListView.GetItemCount(); i++)
+            //{
+
+            //}
+            //foreach (var item in fileList)
+            //{
+            //    if (item.FileExtension == fileExtensionsCbo.Text)
+            //    {
+            //        //Process order is important as list view as crude 
+            //        //databinding that will overide the option if not set in the object first.
+            //        item.Checked = !item.Checked;
+            //        FileListView.Items[item.Index].Checked = item.WillRename;
+            //    }
+            //}
+            //FileListView.RefreshOverlays();
             //FileListView.SetObjects(fileList);
-        }
-
-        //Moving Items up and down the list.
-        private void FileListView_KeyDown(object sender, KeyEventArgs e)
-        {
-            switch (e.KeyCode)
-            {
-                case Keys.Up:
-                    FileController.MoveItemUp(FileListView, fileList);
-                    break;
-                case Keys.Down:
-                    FileController.MoveItemDown(FileListView, fileList);
-                    break;
-            }
-            e.Handled = true;
-        }
-
-        //Will the file be renamed? this passes the value from the view to the property.
-        private void FileListView_ItemChecked(object sender, ItemCheckedEventArgs e)
-        {
-            fileList[int.Parse(e.Item.Text)].WillRename = e.Item.Checked;
-        }
-
-        //Sorting Overide Methods, Should run used to prevent a recursive loop of sorting.
-        private void FileListView_BeforeSorting(object sender, BrightIdeasSoftware.BeforeSortingEventArgs e)
-        {
-            e.Handled = true;
-        }
-        bool shouldRun = true;
-        private void FileListView_AfterSorting(object sender, BrightIdeasSoftware.AfterSortingEventArgs e)
-        {
-            if (shouldRun)
-            {
-                FileController.SortList(fileList, e);
-                shouldRun = false;
-                FileListView.SetObjects(fileList);
-                shouldRun = true;
-            }
         }
 
         //Help Button
@@ -122,23 +129,54 @@ namespace RenameCollection
             MetroFramework.MetroMessageBox.Show(this, message, title);
         }
 
-        //Go Button
-        private void ProcessBtn_Click(object sender, EventArgs e)
+
+        private void OrderFileList()
         {
-            if (fileList != null)
+            for (int i = 0; i < FileListView.Items.Count; i++)
             {
-                if (TemplateStringTxt.Text.Contains("[Index]"))
-                {
-                    ProgressWindow win = new ProgressWindow(TemplateStringTxt.Text, fileList);
-                    win.ShowDialog();
-                    FileListView.SetObjects(fileList);
-                }
-                else
-                {
-                    MetroFramework.MetroMessageBox.Show(this, "Please Include the '[Index]' Tag in the Name Template.", "Incorrect String Template");
-                }
+                Document file = fileList.FindDoc(FileListView.Items[i].SubItems[1].Text);
+                fileList.Remove(file);
+                fileList.Insert(i, file);
             }
         }
+
+        //Moving Items up and down the list.
+        //private void FileListView_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    switch (e.KeyCode)
+        //    {
+        //        case Keys.Up:
+        //            FileController.MoveItemUp(FileListView, fileList);
+        //            break;
+        //        case Keys.Down:
+        //            FileController.MoveItemDown(FileListView, fileList);
+        //            break;
+        //    }
+        //    e.Handled = true;
+        //}
+
+        //Will the file be renamed? this passes the value from the view to the property.
+        //private void FileListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+        //{
+        //    fileList[int.Parse(e.Item.Text)].Checked = e.Item.Checked;
+        //}
+
+        ////Sorting Overide Methods, Should run used to prevent a recursive loop of sorting.
+        //private void FileListView_BeforeSorting(object sender, BrightIdeasSoftware.BeforeSortingEventArgs e)
+        //{
+        //    e.Handled = true;
+        //}
+        //bool shouldRun = true;
+        //private void FileListView_AfterSorting(object sender, BrightIdeasSoftware.AfterSortingEventArgs e)
+        //{
+        //    if (shouldRun)
+        //    {
+        //        FileController.SortList(fileList, e);
+        //        shouldRun = false;
+        //        FileListView.SetObjects(fileList);
+        //        shouldRun = true;
+        //    }
+        //}
 
 
     }

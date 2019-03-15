@@ -8,7 +8,7 @@ namespace RenameCollection
 {
     public partial class ProgressWindow : MetroFramework.Forms.MetroForm
     {
-        public ProgressWindow(string template, List<FileDetails> fileDetails)
+        public ProgressWindow(string template, List<Document> fileDetails)
         {
             InitializeComponent();
             Template = template;
@@ -17,7 +17,7 @@ namespace RenameCollection
         }
 
         public string Template { get; set; }
-        public List<FileDetails> FileList { get; set; }
+        public List<Document> FileList { get; set; }
 
         private void okBtn_Click(object sender, EventArgs e)
         {

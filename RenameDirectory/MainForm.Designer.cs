@@ -33,6 +33,7 @@
             this.FileListView = new BrightIdeasSoftware.ObjectListView();
             this.IndexCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.FileNameCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.EarliestDateCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.DateCreatedCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.DateModifiedCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.FileExtensionCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -48,8 +49,9 @@
             this.metroLabel4 = new MetroFramework.Controls.MetroLabel();
             this.helpBtn = new MetroFramework.Controls.MetroLabel();
             this.ToolTipController = new MetroFramework.Components.MetroToolTip();
-            this.DateTakenCol = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.imageBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.FileListView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox)).BeginInit();
             this.SuspendLayout();
             // 
             // directoryRootSelect
@@ -90,7 +92,7 @@
             // 
             this.FileListView.AllColumns.Add(this.IndexCol);
             this.FileListView.AllColumns.Add(this.FileNameCol);
-            this.FileListView.AllColumns.Add(this.DateTakenCol);
+            this.FileListView.AllColumns.Add(this.EarliestDateCol);
             this.FileListView.AllColumns.Add(this.DateCreatedCol);
             this.FileListView.AllColumns.Add(this.DateModifiedCol);
             this.FileListView.AllColumns.Add(this.FileExtensionCol);
@@ -100,11 +102,11 @@
             this.FileListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
             this.FileListView.CellEditUseWholeCell = false;
             this.FileListView.CheckBoxes = true;
-            this.FileListView.CheckedAspectName = "WillRename";
+            this.FileListView.CheckedAspectName = "";
             this.FileListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.IndexCol,
             this.FileNameCol,
-            this.DateTakenCol,
+            this.EarliestDateCol,
             this.DateCreatedCol,
             this.DateModifiedCol,
             this.FileExtensionCol});
@@ -115,33 +117,38 @@
             this.FileListView.ShowFilterMenuOnRightClick = false;
             this.FileListView.ShowGroups = false;
             this.FileListView.ShowItemCountOnGroups = true;
-            this.FileListView.Size = new System.Drawing.Size(854, 406);
+            this.FileListView.Size = new System.Drawing.Size(848, 606);
             this.FileListView.TabIndex = 1;
             this.FileListView.UseCompatibleStateImageBehavior = false;
             this.FileListView.View = System.Windows.Forms.View.Details;
-            this.FileListView.AfterSorting += new System.EventHandler<BrightIdeasSoftware.AfterSortingEventArgs>(this.FileListView_AfterSorting);
-            this.FileListView.BeforeSorting += new System.EventHandler<BrightIdeasSoftware.BeforeSortingEventArgs>(this.FileListView_BeforeSorting);
-            this.FileListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.FileListView_ItemChecked);
-            this.FileListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FileListView_KeyDown);
+            this.FileListView.SelectedIndexChanged += new System.EventHandler(this.FileListView_SelectedIndexChanged);
             // 
             // IndexCol
             // 
-            this.IndexCol.AspectName = "OrgIndex";
+            this.IndexCol.AspectName = "";
             this.IndexCol.HeaderCheckBox = true;
             this.IndexCol.HeaderCheckState = System.Windows.Forms.CheckState.Checked;
             this.IndexCol.IsEditable = false;
             this.IndexCol.Searchable = false;
             this.IndexCol.ShowTextInHeader = false;
+            this.IndexCol.Sortable = false;
             this.IndexCol.Text = "Index";
             this.IndexCol.ToolTipText = "";
             this.IndexCol.Width = 100;
             // 
             // FileNameCol
             // 
-            this.FileNameCol.AspectName = "Name";
+            this.FileNameCol.AspectName = "FileName";
             this.FileNameCol.IsEditable = false;
             this.FileNameCol.Text = "File Name";
             this.FileNameCol.Width = 250;
+            // 
+            // EarliestDateCol
+            // 
+            this.EarliestDateCol.AspectName = "EarliestDate";
+            this.EarliestDateCol.IsEditable = false;
+            this.EarliestDateCol.Text = "Earliest Date Found";
+            this.EarliestDateCol.Width = 120;
             // 
             // DateCreatedCol
             // 
@@ -180,7 +187,7 @@
             // 
             this.ProcessBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ProcessBtn.Enabled = false;
-            this.ProcessBtn.Location = new System.Drawing.Point(784, 75);
+            this.ProcessBtn.Location = new System.Drawing.Point(786, 75);
             this.ProcessBtn.Name = "ProcessBtn";
             this.ProcessBtn.Size = new System.Drawing.Size(93, 81);
             this.ProcessBtn.TabIndex = 7;
@@ -225,7 +232,7 @@
             // 
             this.TickTypeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TickTypeBtn.Enabled = false;
-            this.TickTypeBtn.Location = new System.Drawing.Point(673, 104);
+            this.TickTypeBtn.Location = new System.Drawing.Point(675, 104);
             this.TickTypeBtn.Name = "TickTypeBtn";
             this.TickTypeBtn.Size = new System.Drawing.Size(88, 23);
             this.TickTypeBtn.TabIndex = 10;
@@ -241,7 +248,7 @@
             this.fileExtensionsCbo.Enabled = false;
             this.fileExtensionsCbo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.fileExtensionsCbo.FormattingEnabled = true;
-            this.fileExtensionsCbo.Location = new System.Drawing.Point(673, 75);
+            this.fileExtensionsCbo.Location = new System.Drawing.Point(675, 75);
             this.fileExtensionsCbo.Name = "fileExtensionsCbo";
             this.fileExtensionsCbo.Size = new System.Drawing.Size(88, 23);
             this.fileExtensionsCbo.TabIndex = 12;
@@ -282,7 +289,7 @@
             // metroLabel4
             // 
             this.metroLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.metroLabel4.Location = new System.Drawing.Point(609, 75);
+            this.metroLabel4.Location = new System.Drawing.Point(611, 75);
             this.metroLabel4.Name = "metroLabel4";
             this.metroLabel4.Size = new System.Drawing.Size(58, 23);
             this.metroLabel4.TabIndex = 16;
@@ -295,7 +302,7 @@
             // 
             this.helpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.helpBtn.AutoSize = true;
-            this.helpBtn.Location = new System.Drawing.Point(803, 7);
+            this.helpBtn.Location = new System.Drawing.Point(1103, 7);
             this.helpBtn.Name = "helpBtn";
             this.helpBtn.Size = new System.Drawing.Size(15, 19);
             this.helpBtn.TabIndex = 17;
@@ -312,18 +319,23 @@
             this.ToolTipController.StyleManager = null;
             this.ToolTipController.Theme = MetroFramework.MetroThemeStyle.Light;
             // 
-            // DateTakenCol
+            // imageBox
             // 
-            this.DateTakenCol.AspectName = "DateTaken";
-            this.DateTakenCol.IsEditable = false;
-            this.DateTakenCol.Text = "Date Taken";
-            this.DateTakenCol.Width = 120;
+            this.imageBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.imageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.imageBox.Location = new System.Drawing.Point(877, 171);
+            this.imageBox.Name = "imageBox";
+            this.imageBox.Size = new System.Drawing.Size(300, 300);
+            this.imageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.imageBox.TabIndex = 18;
+            this.imageBox.TabStop = false;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(900, 600);
+            this.ClientSize = new System.Drawing.Size(1200, 800);
+            this.Controls.Add(this.imageBox);
             this.Controls.Add(this.helpBtn);
             this.Controls.Add(this.metroLabel4);
             this.Controls.Add(this.metroLabel3);
@@ -337,10 +349,11 @@
             this.Controls.Add(this.FileListView);
             this.Controls.Add(this.directoryRootSelect);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(900, 400);
+            this.MinimumSize = new System.Drawing.Size(1200, 800);
             this.Name = "MainForm";
             this.Text = "Rename File Collection";
             ((System.ComponentModel.ISupportInitialize)(this.FileListView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -367,7 +380,8 @@
         private MetroFramework.Controls.MetroLabel metroLabel4;
         private MetroFramework.Controls.MetroLabel helpBtn;
         private MetroFramework.Components.MetroToolTip ToolTipController;
-        private BrightIdeasSoftware.OLVColumn DateTakenCol;
+        private BrightIdeasSoftware.OLVColumn EarliestDateCol;
+        private System.Windows.Forms.PictureBox imageBox;
     }
 }
 
