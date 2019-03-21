@@ -28,9 +28,6 @@ namespace RenameCollection
             }
         }
 
-
-
-
         //Select Folder and load Files into List
         private void directoryRootSelect_ButtonClick(object sender, EventArgs e)
         {
@@ -96,23 +93,7 @@ namespace RenameCollection
         //Mass de/selection via file type
         private void TickType_Click(object sender, EventArgs e)
         {
-            //var items = FileListView.Items;
-            //for (int i = 0; i < FileListView.GetItemCount(); i++)
-            //{
-
-            //}
-            //foreach (var item in fileList)
-            //{
-            //    if (item.FileExtension == fileExtensionsCbo.Text)
-            //    {
-            //        //Process order is important as list view as crude 
-            //        //databinding that will overide the option if not set in the object first.
-            //        item.Checked = !item.Checked;
-            //        FileListView.Items[item.Index].Checked = item.WillRename;
-            //    }
-            //}
-            //FileListView.RefreshOverlays();
-            //FileListView.SetObjects(fileList);
+            
         }
 
         //Help Button
@@ -135,10 +116,13 @@ namespace RenameCollection
             for (int i = 0; i < FileListView.Items.Count; i++)
             {
                 Document file = fileList.FindDoc(FileListView.Items[i].SubItems[1].Text);
+                file.Checked = FileListView.Items[i].Checked;
                 fileList.Remove(file);
-                fileList.Insert(i, file);
+                fileList.Insert(i, file);                
             }
         }
+
+
 
         //Moving Items up and down the list.
         //private void FileListView_KeyDown(object sender, KeyEventArgs e)
